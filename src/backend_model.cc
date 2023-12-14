@@ -1468,6 +1468,7 @@ TRITONAPI_DECLSPEC TRITONSERVER_Error*
 TRITONBACKEND_ResponseNewFromFactory(
     TRITONBACKEND_Response** response, TRITONBACKEND_ResponseFactory* factory)
 {
+  std::cerr << "=== TRITONBACKEND_ResponseNewFromFactory" << factory << std::endl;
   *response = nullptr;
   std::shared_ptr<InferenceResponseFactory>* response_factory =
       reinterpret_cast<std::shared_ptr<InferenceResponseFactory>*>(factory);
