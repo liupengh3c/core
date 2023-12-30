@@ -91,7 +91,7 @@ struct TRITONSERVER_MetricFamily;
 ///   }
 ///
 #define TRITONSERVER_API_VERSION_MAJOR 1
-#define TRITONSERVER_API_VERSION_MINOR 27
+#define TRITONSERVER_API_VERSION_MINOR 28
 
 /// Get the TRITONBACKEND API version supported by the Triton shared
 /// library. This value can be compared against the
@@ -1421,6 +1421,17 @@ TRITONSERVER_DECLSPEC struct TRITONSERVER_Error*
 TRITONSERVER_InferenceRequestSetBoolParameter(
     struct TRITONSERVER_InferenceRequest* request, const char* key,
     const bool value);
+
+/// Set a double parameter in the request.
+///
+/// \param request The request.
+/// \param key The name of the parameter.
+/// \param value The value of the parameter.
+/// \return a TRITONSERVER_Error indicating success or failure.
+TRITONSERVER_DECLSPEC struct TRITONSERVER_Error*
+TRITONSERVER_InferenceRequestSetBoolParameter(
+    struct TRITONSERVER_InferenceRequest* request, const char* key,
+    const double value);
 
 /// TRITONSERVER_InferenceResponse
 ///

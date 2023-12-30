@@ -727,6 +727,10 @@ TRITONSERVER_InferenceRequestSetBoolParameter()
 {
 }
 TRITONAPI_DECLSPEC void
+TRITONSERVER_InferenceRequestSetDoubleParameter()
+{
+}
+TRITONAPI_DECLSPEC void
 TRITONSERVER_InferenceRequestSetIntParameter()
 {
 }
@@ -776,6 +780,10 @@ TRITONBACKEND_ResponseSetIntParameter()
 }
 TRITONAPI_DECLSPEC void
 TRITONBACKEND_ResponseSetBoolParameter()
+{
+}
+TRITONAPI_DECLSPEC void
+TRITONBACKEND_ResponseSetDoubleParameter()
 {
 }
 TRITONAPI_DECLSPEC void
