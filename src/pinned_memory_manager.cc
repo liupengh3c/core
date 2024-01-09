@@ -101,7 +101,7 @@ PinnedMemoryManager::PinnedMemory::~PinnedMemory()
 void*
 PinnedMemoryManager::PinnedMemory::Allocate(uint64_t size)
 {
-  void* ptr = pinned_memory_buffer->managed_pinned_memory_.allocate(
+  void* ptr = managed_pinned_memory_.allocate(
       size, std::nothrow_t{});
   used_pinned_memory_byte_size_ += size;
   LOG_INFO << "*\n*********\nAfter Allocate Updated used_pinned_memory_byte_size_: "
@@ -112,7 +112,7 @@ PinnedMemoryManager::PinnedMemory::Allocate(uint64_t size)
 void
 PinnedMemoryManager::PinnedMemory::Deallocate(void* ptr)
 {
-  pinned_memory_buffer->managed_pinned_memory_.deallocate(ptr);
+  managed_pinned_memory_.deallocate(ptr);
   used_pinned_memory_byte_size_ = 0;
   LOG_INFO << "*\n*********\nAfter Deallocate Updated used_pinned_memory_byte_size_: "
            << used_pinned_memory_byte_size_ << "\n*********\n";
