@@ -101,11 +101,12 @@ PinnedMemoryManager::PinnedMemory::~PinnedMemory()
 void*
 PinnedMemoryManager::PinnedMemory::Allocate(uint64_t size)
 {
-  void* ptr = managed_pinned_memory_.allocate(
-      size, std::nothrow_t{});
+  void* ptr = managed_pinned_memory_.allocate(size, std::nothrow_t{});
   used_pinned_memory_byte_size_ += size;
-  LOG_INFO << "*\n*********\nAfter Allocate Updated used_pinned_memory_byte_size_: "
-           << used_pinned_memory_byte_size_ << "\n*********\n";
+  allocated_memory_info_.emplace(*ptr, size);
+  LOG_INFO
+      << "*\n*********\nAfter Allocate Updated used_pinned_memory_byte_size_: "
+      << used_pinned_memory_byte_size_ << "\n*********\n";
   return ptr;
 }
 
@@ -113,8 +114,13 @@ void
 PinnedMemoryManager::PinnedMemory::Deallocate(void* ptr)
 {
   managed_pinned_memory_.deallocate(ptr);
-  used_pinned_memory_byte_size_ = 0;
-  LOG_INFO << "*\n*********\nAfter Deallocate Updated used_pinned_memory_byte_size_: "
+  auto it = allocated_memory_info_.find(ptr);
+  if (it != allocated_memory_info_.end()) {
+    used_pinned_memory_byte_size_ -= it->second;
+    allocated_memory_info_.erase(it);
+  }
+  LOG_INFO << "*\n*********\nAfter Deallocate Updated "
+              "used_pinned_memory_byte_size_: "
            << used_pinned_memory_byte_size_ << "\n*********\n";
 }
 
@@ -147,7 +153,7 @@ PinnedMemoryManager::AllocInternal(
   auto status = Status::Success;
   if (pinned_memory_buffer->pinned_memory_buffer_ != nullptr) {
     std::lock_guard<std::mutex> lk(pinned_memory_buffer->buffer_mtx_);
-    pinned_memory_buffer->Allocate(size);
+    *ptr = pinned_memory_buffer->Allocate(size);
     *allocated_type = TRITONSERVER_MEMORY_CPU_PINNED;
     if (*ptr == nullptr) {
       status = Status(

@@ -91,6 +91,7 @@ class PinnedMemoryManager {
     void* pinned_memory_buffer_;
     std::mutex buffer_mtx_;
     uint64_t used_pinned_memory_byte_size_;
+    std::map<void*, uint64_t> allocated_memory_info_;
     boost::interprocess::managed_external_buffer managed_pinned_memory_;
   };
 
