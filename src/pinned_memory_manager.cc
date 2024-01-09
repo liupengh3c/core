@@ -73,14 +73,9 @@ PinnedMemoryManager::PinnedMemory::PinnedMemory(
     void* pinned_memory_buffer, uint64_t size)
     : pinned_memory_buffer_(pinned_memory_buffer)
 {
-  LOG_INFO << "*\n*********\nPinnedMemory() constructor called: "
-           << pinned_memory_buffer << " -- " << size << "\n*********\n";
-
   used_pinned_memory_byte_size_ = 0;
 
   if (pinned_memory_buffer_ != nullptr) {
-    LOG_INFO << "*\n*********\nPinnedMemory() constructor - if condition "
-                "called !\n*********\n";
     managed_pinned_memory_ = boost::interprocess::managed_external_buffer(
         boost::interprocess::create_only_t{}, pinned_memory_buffer_, size);
   }
@@ -90,11 +85,7 @@ PinnedMemoryManager::PinnedMemory::PinnedMemory(
 PinnedMemoryManager::PinnedMemory::~PinnedMemory()
 {
 #ifdef TRITON_ENABLE_GPU
-  LOG_INFO << "*\n*********\n~PinnedMemory() destructor called: "
-           << pinned_memory_buffer_ << "\n*********\n";
   if (pinned_memory_buffer_ != nullptr) {
-    LOG_INFO << "*\n*********\n~PinnedMemory() destructor - if condition "
-                "called !\n*********\n";
     cudaFreeHost(pinned_memory_buffer_);
   }
 #endif  // TRITON_ENABLE_GPU
@@ -121,9 +112,6 @@ PinnedMemoryManager::PinnedMemory::Deallocate(void* ptr)
     used_pinned_memory_byte_size_ -= it->second;
     allocated_memory_info_.erase(it);
   }
-  LOG_INFO << "*\n*********\nAfter Deallocate Updated "
-              "used_pinned_memory_byte_size_: "
-           << used_pinned_memory_byte_size_ << "\n*********\n";
 }
 
 uint64_t
@@ -150,8 +138,6 @@ PinnedMemoryManager::AddPinnedMemoryBuffer(
     const std::shared_ptr<PinnedMemory>& pinned_memory_buffer,
     unsigned long node_mask)
 {
-  LOG_INFO << "*\n*********\nAddPinnedMemoryBuffer() is called: "
-           << pinned_memory_buffer << " -- " << node_mask << "\n*********\n";
   pinned_memory_buffers_[node_mask] = pinned_memory_buffer;
   allocated_pinned_memory_buffers_.push_back(pinned_memory_buffer);
 }
@@ -409,8 +395,6 @@ PinnedMemoryManager::Alloc(
       }
     }
   }
-  LOG_INFO << "*\n*********\nNew ALLOC request: " << size << " -- "
-           << pinned_memory_buffer << "\n*********\n";
   return instance_->AllocInternal(
       ptr, size, allocated_type, allow_nonpinned_fallback,
       pinned_memory_buffer);
@@ -424,7 +408,6 @@ PinnedMemoryManager::Free(void* ptr)
         Status::Code::UNAVAILABLE, "PinnedMemoryManager has not been created");
   }
 
-  LOG_INFO << "*\n*********\nNew FREE request: " << ptr << "\n*********\n";
   return instance_->FreeInternal(ptr);
 }
 
