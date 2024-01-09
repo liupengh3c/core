@@ -74,7 +74,6 @@ PinnedMemoryManager::PinnedMemory::PinnedMemory(
     : pinned_memory_buffer_(pinned_memory_buffer)
 {
   used_pinned_memory_byte_size_ = 0;
-
   if (pinned_memory_buffer_ != nullptr) {
     managed_pinned_memory_ = boost::interprocess::managed_external_buffer(
         boost::interprocess::create_only_t{}, pinned_memory_buffer_, size);
@@ -97,9 +96,6 @@ PinnedMemoryManager::PinnedMemory::Allocate(uint64_t size)
   void* ptr = managed_pinned_memory_.allocate(size, std::nothrow_t{});
   used_pinned_memory_byte_size_ += size;
   allocated_memory_info_.emplace(ptr, size);
-  LOG_INFO
-      << "*\n*********\nAfter Allocate Updated used_pinned_memory_byte_size_: "
-      << used_pinned_memory_byte_size_ << "\n*********\n";
   return ptr;
 }
 
@@ -188,7 +184,6 @@ PinnedMemoryManager::AllocInternal(
     if (status.IsOk()) {
       auto res = memory_info_.emplace(
           *ptr, std::make_pair(is_pinned, pinned_memory_buffer));
-
       if (!res.second) {
         status = Status(
             Status::Code::INTERNAL, "unexpected memory address collision, '" +
