@@ -103,7 +103,7 @@ PinnedMemoryManager::PinnedMemory::Allocate(uint64_t size)
 {
   void* ptr = managed_pinned_memory_.allocate(size, std::nothrow_t{});
   used_pinned_memory_byte_size_ += size;
-  allocated_memory_info_.emplace(*ptr, size);
+  allocated_memory_info_.emplace(ptr, size);
   LOG_INFO
       << "*\n*********\nAfter Allocate Updated used_pinned_memory_byte_size_: "
       << used_pinned_memory_byte_size_ << "\n*********\n";
