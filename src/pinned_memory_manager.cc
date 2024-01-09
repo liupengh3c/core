@@ -152,6 +152,7 @@ PinnedMemoryManager::AddPinnedMemoryBuffer(
   LOG_INFO << "*\n*********\nAddPinnedMemoryBuffer() is called: "
            << pinned_memory_buffer << " -- " << node_mask << "\n*********\n";
   pinned_memory_buffers_[node_mask] = pinned_memory_buffer;
+  allocated_pinned_memory_buffers_.push_back(pinned_memory_buffer);
 }
 
 Status
