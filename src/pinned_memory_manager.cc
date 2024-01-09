@@ -66,6 +66,8 @@ ParseIntOption(const std::string& msg, const std::string& arg, int* value)
 
 std::unique_ptr<PinnedMemoryManager> PinnedMemoryManager::instance_;
 uint64_t PinnedMemoryManager::pinned_memory_byte_size_ = 0;
+std::vector<std::shared_ptr<PinnedMemory>>
+    PinnedMemoryManager::allocated_pinned_memory_buffers_;
 
 PinnedMemoryManager::PinnedMemory::PinnedMemory(
     void* pinned_memory_buffer, uint64_t size)
@@ -122,6 +124,13 @@ PinnedMemoryManager::PinnedMemory::Deallocate(void* ptr)
   LOG_INFO << "*\n*********\nAfter Deallocate Updated "
               "used_pinned_memory_byte_size_: "
            << used_pinned_memory_byte_size_ << "\n*********\n";
+}
+
+uint64_t
+PinnedMemoryManager::PinnedMemory::GetUsedPinnedMemorySizeInternal()
+{
+  std::lock_guard<std::mutex> lk(buffer_mtx_);
+  return used_pinned_memory_byte_size_;
 }
 
 PinnedMemoryManager::~PinnedMemoryManager()
@@ -426,7 +435,16 @@ PinnedMemoryManager::GetTotalPinnedMemoryByteSize()
 uint64_t
 PinnedMemoryManager::GetUsedPinnedMemoryByteSize()
 {
-  return 0;
+  uint64_t used_pinned_memory_size = 0;
+  LOG_VERBOSE(1) < < < < "*\n*********\nallocated_pinned_memory_buffers_ size: "
+                             << numbers.size() << "\n*********\n";
+  if (!allocated_pinned_memory_buffers_.empty()) {
+    for (const auto& it : numbers) {
+      used_pinned_memory_size += it->GetUsedPinnedMemorySizeInternal();
+    }
+  }
+
+  return used_pinned_memory_size;
 }
 
 }}  // namespace triton::core
