@@ -136,6 +136,7 @@ PinnedMemoryManager::PinnedMemory::GetUsedPinnedMemorySizeInternal()
 PinnedMemoryManager::~PinnedMemoryManager()
 {
   // Clean up
+  allocated_pinned_memory_buffers_.clear();
   for (const auto& memory_info : memory_info_) {
     const auto& is_pinned = memory_info.second.first;
     if (!is_pinned) {
@@ -437,8 +438,6 @@ uint64_t
 PinnedMemoryManager::GetUsedPinnedMemoryByteSize()
 {
   uint64_t used_pinned_memory_size = 0;
-  LOG_VERBOSE(1) << "*\n*********\nallocated_pinned_memory_buffers_ size: "
-                 << allocated_pinned_memory_buffers_.size() << "\n*********\n";
   if (!allocated_pinned_memory_buffers_.empty()) {
     for (const auto& it : allocated_pinned_memory_buffers_) {
       used_pinned_memory_size += it->GetUsedPinnedMemorySizeInternal();
