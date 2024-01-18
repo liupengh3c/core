@@ -224,6 +224,8 @@ CreateAgentModelListWithLoadAction(
           model_config.Clear();
         }
       }
+      LOG_INFO << "liupeng backend: " << model_config.backend();
+      LOG_INFO << "liupeng platform: " << model_config.platform();
       RETURN_IF_ERROR(TritonRepoAgentModel::Create(
           artifact_type, location, model_config, agent, agent_params,
           &agent_model));

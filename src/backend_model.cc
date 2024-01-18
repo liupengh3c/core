@@ -69,8 +69,8 @@ TritonModel::Create(
   // The model configuration must specify a backend. The name of the
   // corresponding shared library must be libtriton_<backend>.so.
   std::string backend_name = model_config.backend();
-  LOG_INFO << "liupeng backend name: " << model_config.backend();
-  LOG_INFO << "liupeng backend name: " << model_config.platform();
+  LOG_INFO << "liupeng backend: " << model_config.backend();
+  LOG_INFO << "liupeng platform: " << model_config.platform();
   if (backend_name.empty()) {
     return Status(
         Status::Code::INVALID_ARG,
