@@ -1487,7 +1487,8 @@ ModelRepositoryManager::InitializeModelInfo(
   RETURN_IF_ERROR(GetNormalizedModelConfig(
       model_id.name_, linfo->model_path_, min_compute_capability_,
       &linfo->model_config_));
-
+  LOG_INFO << "liupeng InitializeModelInfo backend 2: " << linfo->model_config_.backend();
+  LOG_INFO << "liupeng InitializeModelInfo platform 2: " << linfo->model_config_.platform();
   // Note that the model inputs and outputs are not validated until
   // the model model is initialized as they may not be auto-completed
   // until model is initialized.
@@ -1496,7 +1497,8 @@ ModelRepositoryManager::InitializeModelInfo(
   if (!autofill_) {
     RETURN_IF_ERROR(ValidateModelIOConfig(linfo->model_config_));
   }
-
+  LOG_INFO << "liupeng InitializeModelInfo backend 3: " << linfo->model_config_.backend();
+  LOG_INFO << "liupeng InitializeModelInfo platform 3: " << linfo->model_config_.platform();
   // If the model is mapped, update its config name based on the
   // mapping.
   if (model_mappings_.find(model_id.name_) != model_mappings_.end()) {
